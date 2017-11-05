@@ -1,12 +1,31 @@
-//module imports
-var express = require('express')
-var app = express()
-var exphbs  = require('express-handlebars');
-require('./controllers/posts.js')(app);
+//module imports and node
+const express = require('express')
+const app = express()
+const exphbs  = require('express-handlebars');
+//bodyparser
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+
+//self defined variables and requirements
+const Post = require('./models/post.js');
+//Handlebars code fro iidle where
+app.engine('handlebars', exphbs({defaultLayout: 'main'}));
+app.set('view engine', 'handlebars');
+
+// mongoose.Promise = global.Promise;
+mongoose.connect(process.env.MONGODB_URI ||'mongodb://localhost/putit');
+
+app.use(bodyParser.urlencoded({ extended: true }));
+
 //Routes for navigation
 //Index route
 app.get('/', function (req, res) {
-  res.render('index', {msg: 'put it'});
+  Post.find().then((posts)=>{
+    res.render('posts-index', { posts });
+  }).catch((err)=>{
+    console.log(err.message);
+  })
+
 })
 //Sign up route
 app.get('/signup', function (req, res) {
@@ -21,10 +40,11 @@ app.get('/posts/new', function (req, res) {
   res.render('posts-new', {msg: 'New posts'});
 })
 
+//route for all posts
+
+
 app.listen(process.env.PORT||3000, function () {
   console.log('Server for PutIt listening on port 3000!')
 })
 
-//Handlebars code fro iidle where
-app.engine('handlebars', exphbs({defaultLayout: 'main'}));
-app.set('view engine', 'handlebars');
+require('./controllers/posts')(app)
