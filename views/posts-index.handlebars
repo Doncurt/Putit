@@ -1,1 +1,12 @@
-{{posts}}
+<div class="row">
+  {{#posts}}
+  <div class="col-sm-8 col-sm-offset-2">
+    <li class="list-group-item">
+      <a href="/posts/{{this._id}}" class="lead">{{this.title}}</a>
+    </br>
+      <a href="{{this.url}}" target="_blank">{{this.url}}<a>
+    </li>
+  </div>
+    {{/posts}}
+</div>
+<

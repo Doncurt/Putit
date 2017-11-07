@@ -17,11 +17,11 @@ mongoose.connect(process.env.MONGODB_URI ||'mongodb://localhost/putit');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
-//Routes for navigation
+//Routes for navigation MOVE ALL TO THE CONTROLLERS
 //Index route
 app.get('/', function (req, res) {
   Post.find().then((posts)=>{
-    res.render('posts-index', { posts });
+    res.render('posts-index', { posts: posts});
   }).catch((err)=>{
     console.log(err.message);
   })
@@ -39,7 +39,15 @@ app.get('/login', function (req, res) {
 app.get('/posts/new', function (req, res) {
   res.render('posts-new', {msg: 'New posts'});
 })
+//SHOW ROUTE
+app.get('/posts/:id', function (req, res) {
+   // LOOK UP THE POST
+   Post.findById(req.params.id).exec(function(err, post) {
 
+     // RESPOND BY RENDERING THE TEMPLATE
+     res.render('post-show', { post: post });
+   });
+ });
 //route for all posts
 
 

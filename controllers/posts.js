@@ -6,7 +6,7 @@ module.exports = function(app) {
   app.post('/posts', function (req, res) {
     // INSTANTIATE INSTANCE OF POST MODEL
 
-    console.log("HEY!!!!!!!!");
+    
     console.log(req.body);
 
     var post = new Post(req.body);
