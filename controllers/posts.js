@@ -6,7 +6,7 @@ module.exports = function(app) {
   app.post('/posts', function (req, res) {
     // INSTANTIATE INSTANCE OF POST MODEL
 
-    
+
     console.log(req.body);
 
     var post = new Post(req.body);
@@ -17,12 +17,6 @@ module.exports = function(app) {
       console.log(err.message)
     })
 
-
-    // SAVE INSTANCE OF POST MODEL TO DB
-    // post.save(function (err, post) {
-    //   // REDIRECT TO THE ROOT
-    //   return res.redirect('/');
-    // })
   });
-
+  
 };
