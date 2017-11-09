@@ -4,11 +4,20 @@
     <p>{{post.summary}}</p>
   </div>
   <div class="col-sm-6 col-sm-offset-3">
-  <form action="/posts/{{post._id}}/comments">
-      <textarea class='form-control' name="body" placeholder="Comment"></textarea>
-      <div class="text-right">
-        <button type="submit">Comment</button>
-      </div>
-    </form>
-</div>
+  <form method="POST" action="/posts/{{post._id}}/comments">
+    <label for="comment-content"> Comment </label>
+    <textarea name="content" id="comment-content" class='form-control' placeholder="Comment"></textarea>
+    <div class="text-right">
+      <button type="submit">Comment</button>
+    </div>
+  </form>
+  <div>
+    <p>Comments:</p>
+    {{#each post.comments}}
+      <li class="list-group-item">
+        <p>{{this.content}}</p>
+      </li>
+    {{/each}}
+  </div>
+
 </div>
