@@ -8,6 +8,9 @@ const mongoose = require('mongoose');
 
 //self defined variables and requirements
 const Post = require('./models/post.js');
+var Comment = require('./models/comment.js');
+require('./controllers/comments.js')(app);
+require('./controllers/posts.js')(app);
 //Handlebars code fro iidle where
 app.engine('handlebars', exphbs({defaultLayout: 'main'}));
 app.set('view engine', 'handlebars');
@@ -50,13 +53,25 @@ app.get('/posts/:id', function (req, res) {
  })
 //subreddit routes
 // SUBREDDIT
-app.get('/n/:subreddit', function(req, res) {
-  console.log(req.params.subreddit)
-});
+
  app.post('/n/:subreddit', function(req, res) {
-   Post.find({ subreddit: req.params.subreddit }).exec(function (err, posts) {
-     res.render('posts-index', { posts: posts });
+   post.save().then((post) => {
+     res.redirect('/n/:subreddit');
+   }).catch((err) => {
+     console.log(err.message)
+
    })
+ });
+
+
+ app.get('/n/:subreddit', function(req, res) {
+   //console.log(req.params.subreddit)
+
+   Post.find({subreddit:req.params.subreddit}).then((post) => {
+       res.render('subreddit', {post});
+     }).catch((err) => {
+         console.log("no page to be found");
+     })
  });
 //route for all posts
 
