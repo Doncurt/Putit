@@ -13,21 +13,25 @@ module.exports = (app) => {
   // Index route - show all posts
   app.get('/', (req, res) => {
     Post.find().then((posts) => {
-      res.render('posts-index', { posts });
+      var currentUser = req.user;
+      res.render('posts-index', { posts, currentUser: currentUser});
     }).catch((err) => {
       console.log(err.message);
     })
   })
   //Allwos topost a new post including the subreddit it is in
   app.get('/posts/new', (req, res) => {
-    res.render('posts-new', {msg: 'New posts'});
+
+    res.render('posts-new', {currentUser: currentUser});
   })
 
   //SHOW SINGLE POST by id ROUTE
   app.get('/posts/:id', (req, res) => {
      // LOOK UP THE POST
+
      Post.findById(req.params.id).populate('comments').then((post) => {
-       res.render('post-show', { post: post });
+       var currentUser = req.user;
+       res.render('post-show', { post: post,currentUser: currentUser });
      }).catch((err) => {
        console.log(err.message);
      })
@@ -36,7 +40,7 @@ module.exports = (app) => {
 
 
   // CREATE POST
-app.post('/posts',(req, res)=> {
+app.post('/posts',function(req, res) {
   // INSTANTIATE INSTANCE OF POST MODEL
 
   //Post.findById(req.params.id).populate('comments').exec(function (err, post) {
@@ -68,9 +72,16 @@ app.post('/posts',(req, res)=> {
    //console.log(req.params.subreddit)
 
    Post.find({subreddit:req.params.subreddit}).then((post) => {
-       res.render('subreddit', {post});
+     var currentUser = req.user;
+       res.render('subreddit', {post, currentUser: currentUser});
      }).catch((err) => {
          console.log("no page to be found");
      })
  });
+//LOGOUT ROUTE
+ app.get('/logout', function(req, res, next) {
+  res.clearCookie('nToken');
+
+  res.redirect('/');
+});
 }
