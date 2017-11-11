@@ -14,6 +14,9 @@ module.exports = (app) => {
   app.get('/', (req, res) => {
     Post.find().then((posts) => {
       var currentUser = req.user;
+      console.log("******************");
+      console.log(currentUser);
+      console.log("******************");
       res.render('posts-index', { posts, currentUser: currentUser});
     }).catch((err) => {
       console.log(err.message);
@@ -21,17 +24,16 @@ module.exports = (app) => {
   })
   //Allwos topost a new post including the subreddit it is in
   app.get('/posts/new', (req, res) => {
-
-    res.render('posts-new', {currentUser: currentUser});
+    const currentUser = req.user;
+    res.render('posts-new', { currentUser });
   })
 
   //SHOW SINGLE POST by id ROUTE
   app.get('/posts/:id', (req, res) => {
      // LOOK UP THE POST
-
      Post.findById(req.params.id).populate('comments').then((post) => {
-       var currentUser = req.user;
-       res.render('post-show', { post: post,currentUser: currentUser });
+       const currentUser = req.user;
+       res.render('post-show', { post, currentUser });
      }).catch((err) => {
        console.log(err.message);
      })
