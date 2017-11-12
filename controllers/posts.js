@@ -1,4 +1,6 @@
 var Post = require('../models/post');
+var jwt = require('jsonwebtoken');
+var User = require('../models/User');
 
 /*
   get '/' show all posts
@@ -11,17 +13,15 @@ var Post = require('../models/post');
 // SHOW POSTS get '/' show all posts
 module.exports = (app) => {
   // Index route - show all posts
-  app.get('/', (req, res) => {
-    Post.find().then((posts) => {
-      var currentUser = req.user;
-      console.log("******************");
-      console.log(currentUser);
-      console.log("******************");
-      res.render('posts-index', { posts, currentUser: currentUser});
-    }).catch((err) => {
-      console.log(err.message);
-    })
-  })
+  app.get('/', function (req, res) {
+  var currentUser = req.user;
+
+  Post.find({}).then((posts) => {
+    res.render('posts-index', { posts, currentUser })
+  }).catch((err) => {
+    console.log(err.message);
+  });
+})
   //Allwos topost a new post including the subreddit it is in
   app.get('/posts/new', (req, res) => {
     const currentUser = req.user;
@@ -42,22 +42,30 @@ module.exports = (app) => {
 
 
   // CREATE POST
-app.post('/posts',function(req, res) {
-  // INSTANTIATE INSTANCE OF POST MODEL
+  app.post('/posts', function (req, res) {
 
-  //Post.findById(req.params.id).populate('comments').exec(function (err, post) {
-    //res.render('posts-show', { post: post })
-    console.log(req.body);
+         // If not logged in, do this
+         if (req.user == null) {
+             res.redirect('/login');
+             return
+         }
 
-    var post = new Post(req.body);
+         // INSTANTIATE INSTANCE OF POST MODEL
+         var post = new Post(req.body);
 
-    post.save().then((post) => {
-      res.redirect('/');
-    }).catch((err) => {
-      console.log(err.message)
-    })
-  });
+         User.findById(req.user._id).then((user) => {
+             post.author = user
+             return post.save()
+         }).then(() => {
+             res.redirect('/posts/'+ post._id)
+         }).catch((err) => {
+             console.log(err.message, "Could not save post!")
+             res.redirect('/posts/new')
+         })
 
+
+
+     })
 // Route to create subreddits when it is created in the post itself
 
  app.post('/n/:subreddit',(req, res) => {
@@ -81,9 +89,11 @@ app.post('/posts',function(req, res) {
      })
  });
 //LOGOUT ROUTE
- app.get('/logout', function(req, res, next) {
-  res.clearCookie('nToken');
+   app.get('/logout', function(req, res, next) {
+    res.clearCookie('nToken');
 
-  res.redirect('/');
-});
+    res.redirect('/');
+  });
+  // associating the user with their posts and comments
+
 }
