@@ -26,4 +26,27 @@ module.exports = (app) => {
         console.log(err.message);
       })
   })
+// nested comments
+  app.post('/comments/:commentid', function (req, res) {
+       // INSTANTIATE INSTANCE OF MODEL
+       var comment = new Comment(req.body);
+       console.log(req.body)
+       // SAVE INSTANCE OF POST MODEL TO DB
+
+       Comment.findById(req.params.commentid).then((origcomment)=>{
+           // findById resolved
+           console.log(origcomment)
+           origcomment.comments.unshift(comment)
+           return origcomment.save()
+       }).then((origcomment) => {
+           // post.save resolved
+           return comment.save()
+       }).then((origcomment) => {
+           // comment.save resolved
+           res.redirect('/')
+       }).catch((err)=>{
+           console.log(err.message, "Could not save comment!")
+           res.redirect('/')
+       })
+   })
 }
