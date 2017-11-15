@@ -13,7 +13,7 @@ var User = require('../models/User');
 // SHOW POSTS get '/' show all posts
 module.exports = (app) => {
   // Index route - show all posts
-  app.get('/', function (req, res) {
+  app.get('/', (req, res) => {
   var currentUser = req.user;
 
   Post.find({}).then((posts) => {
@@ -42,7 +42,7 @@ module.exports = (app) => {
 
 
   // CREATE POST
-  app.post('/posts', function (req, res) {
+  app.post('/posts',  (req, res)=> {
 
          // If not logged in, do this
          if (req.user == null) {
@@ -89,7 +89,7 @@ module.exports = (app) => {
      })
  });
 //LOGOUT ROUTE
-   app.get('/logout', function(req, res, next) {
+   app.get('/logout', (req, res, next)=> {
     res.clearCookie('nToken');
 
     res.redirect('/');

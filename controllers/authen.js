@@ -11,12 +11,12 @@ module.exports = (app) => {
     })
 
     // LOGIN FORM
-app.get('/login', function(req, res, next) {
+app.get('/login', (req, res, next)=> {
   res.render('login');
 });
     //Route to login to the site
     // LOGIN
-    app.post('/login', function(req, res, next) {
+    app.post('/login', (req, res, next)=> {
     const username = req.body.username;
     const password = req.body.password;
     // Find this user name

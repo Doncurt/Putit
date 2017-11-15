@@ -26,8 +26,16 @@ module.exports = (app) => {
         console.log(err.message);
       })
   })
+
+  //new nested comments// New comments
+    app.get('/comments/:commentid/new',(req,res) =>{
+        Comment.findById(req.params.commentid).then((comment)=>{
+            res.render('comment-new', {comment});
+
+        })
+    })
 // nested comments
-  app.post('/comments/:commentid', function (req, res) {
+  app.post('/comments/:commentid', (req, res)=> {
        // INSTANTIATE INSTANCE OF MODEL
        var comment = new Comment(req.body);
        console.log(req.body)
